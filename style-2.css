@@ -19,7 +19,7 @@ body {
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     line-height: 1.6;
     color: var(--fg);
-    background: linear-gradient(180deg, #0b0f14 0%, #111827 100%);
+    background: #0b0f14; /* solid color matching the top of the page */
     padding: 0 1rem;
 }
 

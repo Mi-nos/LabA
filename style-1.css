@@ -19,7 +19,7 @@ body {
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     line-height: 1.6;
     color: var(--fg);
-    background: linear-gradient(180deg, #0b0f14 0%, #111827 100%);
+    background: #0b0f14;
     padding: 0 1rem;
 }
 
@@ -35,6 +35,8 @@ header, footer {
 h1 {
     margin: 0;
     font-size: 1.75rem;
+    position: relative; /* keep above waves */
+    z-index: 1; /*0 - fale, -1 - reszta*/
 }
 
 main {
@@ -43,11 +45,13 @@ main {
 }
 
 section {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
+    background: #0f1724; /* opaque panel */
+    border: 1px solid #1b2a3a; /* opaque border */
+    border-radius: 0;
+    padding: 0.5rem 0.75rem; /* reduced padding in each grid cell */
     margin-bottom: 1rem;
+    position: relative; /* create stacking context above gallery */
+    z-index: 1;
 }
 
 h2 {
@@ -68,6 +72,7 @@ li {
     margin: 0.25rem 0;
 }
 
+/*żeby trochę niżej ustawić footer*/
 footer p {
     margin: 0;
     color: var(--muted);
@@ -94,75 +99,42 @@ header, footer, main {
     width: 100%;
 }
 
-/* Grid layout inside main (4x4) */
+/* główny grid 4x4 */
 main {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns */
-    grid-template-rows: 1fr 1fr 1fr 1fr;    /* 4 rows */
-    gap: 0.5rem;
-    overflow: hidden; /* prevent main from causing page scroll */
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    overflow: hidden;
 }
 
-/* Remove extra margins and allow inner scrolling if needed */
+/* opcjonalne, ale wyrównuje dół i dodaje scrolla dla sekcji */
 main > section {
     margin: 0;
-    overflow: auto; /* section can scroll internally if content is taller */
+    overflow: scroll; /* section can scroll internally if content is taller */
 }
 
-/* Place sections in outer columns: two per column */
-main > section:nth-of-type(1) { grid-column: 1; grid-row: 1 / span 2; }
-main > section:nth-of-type(2) { grid-column: 1; grid-row: 3 / span 2; }
-main > section:nth-of-type(3) { grid-column: 4; grid-row: 1 / span 2; }
+/* Place sections according to requested layout */
+main > section:nth-of-type(1) { grid-column: 1; grid-row: 1 / span 3; }
+main > section:nth-of-type(2) { grid-column: 3; grid-row: 1 / span 2; }
+main > section:nth-of-type(3) { grid-column: 2; grid-row: 3 / span 2; }
 main > section:nth-of-type(4) { grid-column: 4; grid-row: 3 / span 2; }
 
-/* Gallery occupies middle columns (2-3) across all rows */
-.gallery {
-    grid-column: 2 / 4;
-    grid-row: 1 / 5;
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* lewa i prawa kolumna galerii */
-    grid-template-rows: 1fr;
-    gap: 0.5rem;
-    margin: 0; /* align with sections */
-    overflow: hidden; /* ukryj przewijanie wewnętrzne, sterujemy animacją */
-}
-
-/* Pojedyncza kolumna; obrazki i przewijanie realizowane w CSS jako tło */
-.gallery .col {
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-}
-
-/* Rolka w CSS: kafelkujące tło z rybą, 4 widoczne kafelki na wysokość */
-.gallery .col::before {
+/* Extra tile: w2k2 styled like sections; w1k4 moved to real tile */
+main::before {
     content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("resources/discus-fish-1943755_1920.jpg");
-    background-repeat: repeat-y;
-    background-size: 100% 25%; /* 4 kafelki na wysokość */
-    background-position: 0 0;
+    display: block;
+    background: #0f1724; /* opaque panel, same as sections */
+    border: 1px solid #1b2a3a; /* opaque border, same as sections */
+    border-radius: 0;
+    /* allow inner overflow behavior similar to sections */
+    overflow: hidden;
+    position: relative; /* enable z-index */
+    z-index: 1; /* above gallery */
+    grid-column: 2; grid-row: 2; /* w2k2 => row 2, col 2 */
 }
+/* Disable pseudo tile at w1k4; replaced by .tile-w1k4 element */
+main::after { content: none; display: none; }
 
-/* Animacje przewijania tła: lewa kolumna w górę, prawa w dół */
-.gallery .up::before {
-    animation: bgUp 30s linear infinite;
-}
-
-.gallery .down::before {
-    animation: bgDown 30s linear infinite;
-}
-
-@keyframes bgUp {
-    from { background-position-y: 0; }
-    to   { background-position-y: -100%; }
-}
-
-@keyframes bgDown {
-    from { background-position-y: -100%; }
-    to   { background-position-y: 0; }
-}
 
 /* Waves footer styling */
 footer {
@@ -208,4 +180,241 @@ footer::after {
 @keyframes waveReverse {
     from { background-position: 0 100%; }
     to   { background-position: -200px 100%; }
+}
+
+/* Waves header styling (inverted) */
+header {
+    position: relative;
+    overflow: hidden; /* keep waves inside rounded header */
+    background: linear-gradient(180deg, #0a3454 0%, #06223a 100%);
+    text-align: center; /* center the title */
+}
+
+/* Two layered animated wave bands at the bottom of the header (rotated 180deg) */
+header::before,
+header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 80px;            /* wave band height */
+    bottom: -20px;           /* slightly overlap the bottom edge */
+    top: auto;
+    background-repeat: repeat-x;
+    background-position: 0 100%;
+    background-size: 200px 80px; /* width of one wave tile */
+    pointer-events: none;
+    transform: rotate(180deg);
+    transform-origin: center;
+    z-index: 0; /* keep waves behind the title */
+}
+
+/* Front wave (darker) */
+header::before {
+    opacity: 0.9;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M0 30 Q 30 0 60 30 T 120 30 V60 H0 Z' fill='%23062a44'/></svg>");
+    animation: wave 14s linear infinite;
+}
+
+/* Back wave (lighter, slower, parallax) */
+header::after {
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M0 30 Q 30 60 60 30 T 120 30 V60 H0 Z' fill='%230e4a76'/></svg>");
+    animation: waveReverse 22s linear infinite;
+}
+
+
+/* Grid metrics and moving gallery overlay */
+main {
+    position: relative;
+    background: inherit; /* mask gallery behind with the same gradient as body */
+    --cols: 4;
+    --rows: 4;
+    --gap: 0.5rem;
+    --cellW: calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+    --cellH: calc((100% - (var(--rows) - 1) * var(--gap)) / var(--rows));
+    --gridW: calc(var(--cols) * var(--cellW) + (var(--cols) - 1) * var(--gap));
+    --gridH: calc(var(--rows) * var(--cellH) + (var(--rows) - 1) * var(--gap));
+}
+
+/* Overlay gallery spans the whole grid and does not block interactions */
+.gallery {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    position: relative;
+    display: block;
+    pointer-events: none;
+    z-index: 0; /* above main background, behind sections */
+    background: transparent;
+    --swimDur: 14s; /* unified duration for all fish */
+}
+
+/* Each column becomes a moving fish tile */
+.gallery .col {
+    position: absolute;
+    width: var(--cellW);
+    height: var(--cellH);
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+}
+
+/* Fish 1: enters from left, passes row1 col2, exits at row2 col4 (right edge) */
+.gallery .up {
+    background-image: url("resources/fish-3322230_1920.jpg");
+    left: calc(-1 * var(--cellW));
+    top: 0; /* row 1 */
+    animation: swim_lr_w1k2 var(--swimDur) linear infinite; /* left -> right across row 1 */
+    border: 2px solid rgba(255,255,255,0.35); /* subtle frame */
+    border-radius: 12px; /* match tile rounding */
+    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    z-index: -3; /* one level deeper than the other fish */
+}
+
+/* Fish 2: enters from right, first on row3 col3, exits at row4 col1 (left edge) */
+.gallery .down {
+    background-image: url("resources/fish-7391851_1920.jpg");
+    left: 0; /* column 1 */
+    top: calc(3 * (var(--cellH) + var(--gap))); /* row 4 */
+    animation: swim_up_w4k1 var(--swimDur) linear infinite; /* bottom -> up through W4K1 */
+}
+
+
+
+
+
+/* Bring front-facing tiles: w1k1/w2k1 (section 1) and w1k3/w2k3 (section 2) */
+main > section:nth-of-type(1),
+main > section:nth-of-type(2) {
+    z-index: 3; /* move to the very front above other tiles/overlays */
+}
+
+
+/* Extra tiles styled like sections */
+.tile.extra {
+    background: #0f1724; /* opaque panel, same as sections */
+    border: 1px solid #1b2a3a; /* opaque border, same as sections */
+    border-radius: 0;
+    position: relative; /* enable z-index */
+    z-index: 1; /* above gallery */
+    padding: 0.5rem 0.75rem; /* match section padding for content tiles */
+    overflow: auto; /* allow scroll if content overflows */
+}
+
+/* Ramki (frames) w pustych kratkach siatki, nad galerią ryb */
+.frame {
+    position: relative; /* umożliwia z-index wewnątrz siatki */
+    background: transparent; /* tło przezroczyste, cieniowanie dodamy pseudo-elementem */
+    outline: 1px solid #0f1724; /* gruba ramka zewnętrzna w kolorze sekcji */
+    border-radius: 0; /* prostokątne ramki, bez zaokrągleń */
+    z-index: 1; /* nad .gallery (z-index:0), więc ryby są pod nimi */
+    pointer-events: none; /* nie blokuj interakcji */
+}
+
+/* Wypełnienie z okrągłym „oknem” pośrodku */
+.frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #0f1724; /* zakryj całą komórkę kolorem tła sekcji */
+    /* Wytnij okrąg w środku; reszta pozostaje kryjąca. */
+    mask: radial-gradient(circle at 50% 50%, transparent 55%, #000 40%);
+}
+
+/* Pozycje ramek: */
+.frame-w1k2 { grid-column: 2; grid-row: 1; }
+.frame-w2k4 { grid-column: 4; grid-row: 2; }
+.frame-w3k3 { grid-column: 3; grid-row: 3; }
+.frame-w4k1 { grid-column: 1; grid-row: 4; }
+
+/* w3k1 => row 3, col 1 */
+.tile-w3k1 { grid-column: 1; grid-row: 3; }
+/* w4k3 => row 4, col 3 */
+.tile-w4k3 { grid-column: 3; grid-row: 4; }
+/* w1k4 => row 1, col 4 */
+.tile-w1k4 { grid-column: 4; grid-row: 1; }
+
+
+/* Additional synchronized images B and D */
+.gallery .up-b {
+    background-image: url("resources/discus-fish-1943755_1920.jpg");
+    left: var(--gridW); /* start off-screen right */
+    top: calc(2 * (var(--cellH) + var(--gap))); /* row 3 */
+    width: var(--cellW);
+    height: var(--cellH);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    border: 2px solid rgba(255,255,255,0.3);
+    animation: swim_rl_w3k3 var(--swimDur) linear infinite; /* right -> left across row 3 */
+    z-index: -2; /* between upper and lower fish depths */
+}
+
+.gallery .down-d {
+    background-image: url("resources/jellyfish-3814142_1920.jpg");
+    left: calc(3 * (var(--cellW) + var(--gap))); /* column 4 */
+    top: 0; /* row 1 start for downward travel */
+    width: var(--cellW);
+    height: var(--cellH);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    border: 2px solid rgba(255,255,255,0.25);
+    animation: swim_down_w2k4 var(--swimDur) linear infinite; /* top -> down through W2K4 */
+    z-index: -1;
+}
+
+
+
+/* New directional keyframes per window requirement */
+@keyframes swim_lr_w1k2 {
+    0% {
+        left: calc(-1 * var(--cellW));
+        top: 0; /* row 1 */
+        transform: none;
+    }
+    100% {
+        left: var(--gridW);
+        top: 0; /* row 1 */
+        transform: none;
+    }
+}
+
+@keyframes swim_up_w4k1 {
+    0% {
+        left: 0; /* column 1 */
+        top: var(--gridH); /* start off-screen bottom */
+        transform: none;
+    }
+    100% {
+        left: 0; /* column 1 */
+        top: calc(-1 * var(--cellH)); /* exit off-screen top */
+        transform: none;
+    }
+}
+
+@keyframes swim_down_w2k4 {
+    0% {
+        left: calc(3 * (var(--cellW) + var(--gap))); /* column 4 */
+        top: calc(-1 * var(--cellH)); /* start off-screen top */
+        transform: none;
+    }
+    100% {
+        left: calc(3 * (var(--cellW) + var(--gap))); /* column 4 */
+        top: var(--gridH); /* exit off-screen bottom */
+        transform: none;
+    }
+}
+
+@keyframes swim_rl_w3k3 {
+    0% {
+        left: var(--gridW); /* start off-screen right */
+        top: calc(2 * (var(--cellH) + var(--gap))); /* row 3 */
+        transform: scaleY(-1);
+    }
+    100% {
+        left: calc(-1 * var(--cellW)); /* exit off-screen left */
+        top: calc(2 * (var(--cellH) + var(--gap))); /* row 3 */
+        transform: scaleY(-1);
+    }
 }
