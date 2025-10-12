@@ -72,3 +72,140 @@ footer p {
     margin: 0;
     color: var(--muted);
 }
+
+/* Ryby w tym stylu: znaczniki list (UL) mają ikonkę ryby */
+ul li::marker {
+    content: "🐟 ";
+}
+
+/* Layout grid to fit everything without page scroll */
+body {
+    height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto; /* header | main | footer */
+    overflow: hidden; /* no page scrollbar */
+    padding: 0.5rem; /* compact padding around content */
+}
+
+/* Make main/header/footer span full width inside the grid */
+header, footer, main {
+    max-width: none;
+    margin: 0;
+    width: 100%;
+}
+
+/* Grid layout inside main (4x4) */
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns */
+    grid-template-rows: 1fr 1fr 1fr 1fr;    /* 4 rows */
+    gap: 0.5rem;
+    overflow: hidden; /* prevent main from causing page scroll */
+}
+
+/* Remove extra margins and allow inner scrolling if needed */
+main > section {
+    margin: 0;
+    overflow: auto; /* section can scroll internally if content is taller */
+}
+
+/* Place sections in outer columns: two per column */
+main > section:nth-of-type(1) { grid-column: 1; grid-row: 1 / span 2; }
+main > section:nth-of-type(2) { grid-column: 1; grid-row: 3 / span 2; }
+main > section:nth-of-type(3) { grid-column: 4; grid-row: 1 / span 2; }
+main > section:nth-of-type(4) { grid-column: 4; grid-row: 3 / span 2; }
+
+/* Gallery occupies middle columns (2-3) across all rows */
+.gallery {
+    grid-column: 2 / 4;
+    grid-row: 1 / 5;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* lewa i prawa kolumna galerii */
+    grid-template-rows: 1fr;
+    gap: 0.5rem;
+    margin: 0; /* align with sections */
+    overflow: hidden; /* ukryj przewijanie wewnętrzne, sterujemy animacją */
+}
+
+/* Pojedyncza kolumna; obrazki i przewijanie realizowane w CSS jako tło */
+.gallery .col {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+/* Rolka w CSS: kafelkujące tło z rybą, 4 widoczne kafelki na wysokość */
+.gallery .col::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("resources/discus-fish-1943755_1920.jpg");
+    background-repeat: repeat-y;
+    background-size: 100% 25%; /* 4 kafelki na wysokość */
+    background-position: 0 0;
+}
+
+/* Animacje przewijania tła: lewa kolumna w górę, prawa w dół */
+.gallery .up::before {
+    animation: bgUp 30s linear infinite;
+}
+
+.gallery .down::before {
+    animation: bgDown 30s linear infinite;
+}
+
+@keyframes bgUp {
+    from { background-position-y: 0; }
+    to   { background-position-y: -100%; }
+}
+
+@keyframes bgDown {
+    from { background-position-y: -100%; }
+    to   { background-position-y: 0; }
+}
+
+/* Waves footer styling */
+footer {
+    position: relative;
+    overflow: hidden; /* keep waves inside rounded footer */
+    background: linear-gradient(180deg, #06223a 0%, #0a3454 100%);
+}
+
+/* Two layered animated wave bands at the top of the footer */
+footer::before,
+footer::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 80px;            /* wave band height */
+    top: -20px;              /* slightly overlap the top edge */
+    background-repeat: repeat-x;
+    background-position: 0 100%;
+    background-size: 200px 80px; /* width of one wave tile */
+    pointer-events: none;
+}
+
+/* Front wave (darker) */
+footer::before {
+    opacity: 0.9;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M0 30 Q 30 0 60 30 T 120 30 V60 H0 Z' fill='%23062a44'/></svg>");
+    animation: wave 14s linear infinite;
+}
+
+/* Back wave (lighter, slower, parallax) */
+footer::after {
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M0 30 Q 30 60 60 30 T 120 30 V60 H0 Z' fill='%230e4a76'/></svg>");
+    animation: waveReverse 22s linear infinite;
+}
+
+@keyframes wave {
+    from { background-position: 0 100%; }
+    to   { background-position: 200px 100%; }
+}
+
+@keyframes waveReverse {
+    from { background-position: 0 100%; }
+    to   { background-position: -200px 100%; }
+}
