@@ -20,7 +20,6 @@ body {
     line-height: 1.6;
     color: var(--fg);
     background: #0b0f14;
-    padding: 0 1rem;
 }
 
 header, footer {
@@ -28,8 +27,6 @@ header, footer {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     padding: 1rem 1.25rem;
-    margin: 1rem auto;
-    max-width: 900px;
 }
 
 h1 {
@@ -320,7 +317,7 @@ main > section:nth-of-type(2) {
     inset: 0;
     background: #0f1724; /* zakryj całą komórkę kolorem tła sekcji */
     /* Wytnij okrąg w środku; reszta pozostaje kryjąca. */
-    mask: radial-gradient(circle at 50% 50%, transparent 40%, #000 0%);
+    mask: radial-gradient(circle at 50% 50%, transparent 35%, #000 0%);
 }
 
 /* Pozycje ramek: */
@@ -350,7 +347,7 @@ main > section:nth-of-type(2) {
 }
 
 .gallery .down-d {
-    background-image: url("resources/jellyfish-3814142_1920.jpg");
+    background-image: url("resources/fish-6354894_1920.jpg");
     left: 0;
     top: 0;
     width: var(--cellW);
@@ -418,29 +415,45 @@ main > section:nth-of-type(2) {
 }
 
 
-/* Responsive adjustments: minimalist support for ~375px phones and ~1440px desktops */
+/* Responsive adjustments: minimalist support for ~375px phones */
 @media (max-width: 420px) {
     /* Allow natural page scroll on small screens */
-    body { height: auto; overflow: auto; padding: 0.5rem; }
+    body {
+        height: auto;
+        overflow: auto;
+        padding: 0.5rem;
+    }
 
     /* Stack content vertically; grid becomes a linear flow */
-    main { display: block; margin: 0.5rem 0 1rem; }
+    main {
+        display: block;
+        margin: 0.5rem 0 1rem;
+    }
 
     /* Keep content readable and compact */
-    header, footer { padding: 0.75rem 1rem; }
-    section, .tile.extra { margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; }
+    header,
+    footer {
+        padding: 0.75rem 1rem;
+    }
+
+    section,
+    .tile.extra {
+        margin-bottom: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
 
     /* Hide decorative layers on small screens */
-    .gallery, .frame { display: none !important; }
+    .gallery,
+    .frame {
+        display: none !important;
+    }
 }
 
-@media (min-width: 1400px) {
-    /* Constrain and center the main content area for wide viewports */
-    header, footer, main { max-width: 1280px; margin-left: auto; margin-right: auto; }
-
-    /* Slightly increase outer padding for breathing room on desktop */
-    body { padding: 0 2rem; }
-
-    /* Tiny typographic upscale */
-    h1 { font-size: 2rem; }
+/* Default desktop/tablet view stays as-is (no shrinking!) */
+/* Optionally, apply light enhancements only if needed */
+@media (min-width: 1600px) {
+    h1 {
+        font-size: 2rem;
+    }
 }
+
