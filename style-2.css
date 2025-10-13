@@ -3,7 +3,11 @@
   --bg: #101418;
   --fg: #e8eef5;
   --muted: #9fb3c8;
-  --accent: #ffffff; /* will be overridden per cell when needed */
+  --accent: #ffffff;
+    --red: #F23337;
+    --blue: #317CFF;
+    --green: #22c110;
+    --yellow: #eee208 /* will be overridden per cell when needed */
 }
 
 html { box-sizing: border-box; }
@@ -38,10 +42,11 @@ header h1 { color: transparent; position: relative; }
 header h1::after { content: "Lorem ipsum dolor sit amet"; color: var(--fg); font-size: 1.6rem; }
 
 main {
-  /* 2x2 grid for the four sections from HTML */
+  /* 4x4 grid with colored blocks centered in middle rows/columns */
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+
   gap: 8px;
   min-height: 0; /* allow children to size/scroll */
 }
@@ -54,20 +59,14 @@ main > section {
   overflow: auto; /* internal scroll if content is tall */
   border: none;   /* clean color tiles */
   color: var(--fg);
+
+  will-change: background-color;
 }
 
-/* Place the first four sections explicitly into the 2x2 grid */
-main > section:nth-of-type(1) { grid-area: 1 / 1; }
-main > section:nth-of-type(2) { grid-area: 1 / 2; }
-main > section:nth-of-type(3) { grid-area: 2 / 1; }
-main > section:nth-of-type(4) { grid-area: 2 / 2; }
-
-/* Per-cell colors for style-2: 1=Red, 2=Green, 3=Yellow, 4=Blue */
-/* Also override text variables for readability on each background */
-main > section:nth-of-type(1) { background: #d32f2f; --fg: #ffffff; --accent: #ffffff; color: var(--fg); }
-main > section:nth-of-type(2) { background: #388e3c; --fg: #ffffff; --accent: #ffffff; color: var(--fg); }
-main > section:nth-of-type(3) { background: #ffeb3b; --fg: #111111; --accent: #111111; color: var(--fg); }
-main > section:nth-of-type(4) { background: #1976d2; --fg: #ffffff; --accent: #ffffff; color: var(--fg); }
+main > section:nth-of-type(1) { grid-area: 2 / 2; background-color: var(--red); --fg: #ffffff; --accent: #ffffff; color: var(--fg); animation: colorShift 2s linear infinite; }
+main > section:nth-of-type(2) { grid-area: 2 / 3; background-color: var(--green); --fg: #ffffff; --accent: #ffffff; color: var(--fg); animation: colorShift 2s linear infinite; }
+main > section:nth-of-type(3) { grid-area: 3 / 2; background-color: var(--yellow); --fg: #111111; --accent: #111111; color: var(--fg); animation: colorShift 2s linear infinite; }
+main > section:nth-of-type(4) { grid-area: 3 / 3; background-color: var(--blue); --fg: #ffffff; --accent: #ffffff; color: var(--fg); animation: colorShift 2s linear infinite; }
 
 /* Headings inside sections use the per-cell accent for clarity */
 main > section h2 { margin-top: 0; color: var(--accent); }
@@ -93,4 +92,16 @@ main > section::after {
   line-height: 1.6;
   /* keep padding consistent with section */
   /* Sections already have padding, so no extra padding here to avoid double spacing */
+}
+
+@keyframes colorShift {
+  0%, 24% { background-color: var(--red); }
+  25%, 49% { background-color: var(--green); }
+  50%, 74% { background-color: var(--blue); }
+  75%, 99% { background-color: var(--green); }
+  100% { background-color: var(--red); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main > section { animation: none !important; }
 }
