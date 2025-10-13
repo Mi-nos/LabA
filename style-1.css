@@ -1,4 +1,4 @@
-/* Podstawowe style dla test.html */
+/* Podstawowe style dla site.html */
 :root {
     --bg: #0b0f14;
     --fg: #e8eef5;
@@ -32,7 +32,7 @@ header, footer {
 h1 {
     margin: 0;
     font-size: 1.75rem;
-    position: relative; /* keep above waves */
+    position: relative; /* ponad falami */
     z-index: 1; /*0 - fale, -1 - reszta*/
 }
 
@@ -84,12 +84,12 @@ ul li::marker {
 body {
     height: 100vh;
     display: grid;
-    grid-template-rows: auto 1fr auto; /* header | main | footer */
-    overflow: hidden; /* no page scrollbar */
+    grid-template-rows: auto 1fr auto; /* nagłówek | główna | stopka */
+    overflow: hidden; /* bez paska przewijania */
     padding: 0.5rem; /* compact padding around content */
 }
 
-/* Make main/header/footer span full width inside the grid */
+/* Nagłówek, główna i stopka na pełną szerokość siatki */
 header, footer, main {
     max-width: none;
     margin: 0;
@@ -107,62 +107,62 @@ main {
 /* opcjonalne, ale wyrównuje dół i dodaje scrolla dla sekcji */
 main > section {
     margin: 0;
-    overflow: scroll; /* section can scroll internally if content is taller */
+    overflow: scroll; /* sekcja przewija własną treść */
 }
 
-/* Place sections according to requested layout */
+/* Rozmieszczenie sekcji wg układu */
 main > section:nth-of-type(1) { grid-column: 1; grid-row: 1 / span 3; }
 main > section:nth-of-type(2) { grid-column: 3; grid-row: 1 / span 2; }
 main > section:nth-of-type(3) { grid-column: 2; grid-row: 3 / span 2; }
 main > section:nth-of-type(4) { grid-column: 4; grid-row: 3 / span 2; }
 
-/* Extra tile: w2k2 styled like sections; w1k4 moved to real tile */
+/* Dodatkowy kafel: w2k2 jak sekcje; w1k4 przeniesiony do .tile */
 main::before {
     content: "";
     display: block;
-    background: #0f1724; /* opaque panel, same as sections */
-    border: 1px solid #1b2a3a; /* opaque border, same as sections */
+    background: #0f1724; /* panel jak sekcje */
+    border: 1px solid #1b2a3a; /* obramowanie jak sekcje */
     border-radius: 0;
-    /* allow inner overflow behavior similar to sections */
+    /* wewn. przewijanie jak w sekcjach */
     overflow: hidden;
-    position: relative; /* enable z-index */
-    z-index: 1; /* above gallery */
-    grid-column: 2; grid-row: 2; /* w2k2 => row 2, col 2 */
+    position: relative; /* dla z-index */
+    z-index: 1; /* nad galerią */
+    grid-column: 2; grid-row: 2; /* w2k2 = rząd 2, kol. 2 */
 }
-/* Disable pseudo tile at w1k4; replaced by .tile-w1k4 element */
+/* Wyłącz pseudo‑kafelek w1k4; zastępuje go .tile-w1k4 */
 main::after { content: none; display: none; }
 
 
-/* Waves footer styling */
+/* Fale w stopce */
 footer {
     position: relative;
-    overflow: hidden; /* keep waves inside rounded footer */
+    overflow: hidden; /* fale w środku stopki */
     background: linear-gradient(180deg, #06223a 0%, #0a3454 100%);
 }
 
-/* Two layered animated wave bands at the top of the footer */
+/* Dwie warstwy fal u góry stopki */
 footer::before,
 footer::after {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
-    height: 80px;            /* wave band height */
-    top: -20px;              /* slightly overlap the top edge */
+    height: 80px;            /* wysokość pasma fali */
+    top: -20px;              /* lekkie nałożenie na górę */
     background-repeat: repeat-x;
     background-position: 0 100%;
-    background-size: 200px 80px; /* width of one wave tile */
+    background-size: 200px 80px; /* szerokość kafla fali */
     pointer-events: none;
 }
 
-/* Front wave (darker) */
+/* Przednia fala (ciemniejsza) */
 footer::before {
     opacity: 0.9;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M0 30 Q 30 0 60 30 T 120 30 V60 H0 Z' fill='%23062a44'/></svg>");
     animation: wave 14s linear infinite;
 }
 
-/* Back wave (lighter, slower, parallax) */
+/* Tylna fala (jaśniejsza, wolniejsza) */
 footer::after {
     opacity: 0.5;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M0 30 Q 30 60 60 30 T 120 30 V60 H0 Z' fill='%230e4a76'/></svg>");
@@ -179,41 +179,41 @@ footer::after {
     to   { background-position: -200px 100%; }
 }
 
-/* Waves header styling (inverted) */
+/* Fale w nagłówku (odwrócone) */
 header {
     position: relative;
-    overflow: hidden; /* keep waves inside rounded header */
+    overflow: hidden; /* fale w środku nagłówka */
     background: linear-gradient(180deg, #0a3454 0%, #06223a 100%);
-    text-align: center; /* center the title */
+    text-align: center; /* wyśrodkuj tytuł */
 }
 
-/* Two layered animated wave bands at the bottom of the header (rotated 180deg) */
+/* Dwie warstwy fal na dole nagłówka (obrót 180°) */
 header::before,
 header::after {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
-    height: 80px;            /* wave band height */
-    bottom: -20px;           /* slightly overlap the bottom edge */
+    height: 80px;            /* wysokość pasma fali */
+    bottom: -20px;           /* lekkie nałożenie na dół */
     top: auto;
     background-repeat: repeat-x;
     background-position: 0 100%;
-    background-size: 200px 80px; /* width of one wave tile */
+    background-size: 200px 80px; /* szerokość kafla fali */
     pointer-events: none;
     transform: rotate(180deg);
     transform-origin: center;
-    z-index: 0; /* keep waves behind the title */
+    z-index: 0; /* fale za tytułem */
 }
 
-/* Front wave (darker) */
+/* Przednia fala (ciemniejsza) */
 header::before {
     opacity: 0.9;
-        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M0 30 Q 30 0 60 30 T 120 30 V60 H0 Z' fill='%23062a44'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M0 30 Q 30 0 60 30 T 120 30 V60 H0 Z' fill='%23062a44'/></svg>");
     animation: wave 14s linear infinite;
 }
 
-/* Back wave (lighter, slower, parallax) */
+/* Tylna fala (jaśniejsza, wolniejsza) */
 header::after {
     opacity: 0.5;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M0 30 Q 30 60 60 30 T 120 30 V60 H0 Z' fill='%230e4a76'/></svg>");
@@ -221,10 +221,10 @@ header::after {
 }
 
 
-/* Grid metrics and moving gallery overlay */
+/* Metryki siatki i ruchoma galeria */
 main {
     position: relative;
-    background: inherit; /* mask gallery behind with the same gradient as body */
+    background: inherit; /* tło jak body, maskuje galerię */
     --cols: 4;
     --rows: 4;
     --gap: 0.5rem;
@@ -234,19 +234,19 @@ main {
     --gridH: calc(var(--rows) * var(--cellH) + (var(--rows) - 1) * var(--gap));
 }
 
-/* Overlay gallery spans the whole grid and does not block interactions */
+/* Galeria na całą siatkę, nie blokuje interakcji */
 .gallery {
     grid-column: 1 / -1;
     grid-row: 1 / -1;
     position: relative;
     display: block;
     pointer-events: none;
-    z-index: 0; /* above main background, behind sections */
+    z-index: 0;
     background: transparent;
-    --swimDur: 8s; /* unified duration for all fish; reduced to shorten idle gap between passes */
+    --swimDur: 8s; /* wspólny czas animacji; krótsze przerwy */
 }
 
-/* Each column becomes a moving fish tile */
+/* Każda kolumna to ruchomy kafel ryby */
 .gallery .col {
     position: absolute;
     width: var(--cellW);
@@ -258,46 +258,46 @@ main {
     box-shadow: 0 4px 12px rgba(0,0,0,.25);
 }
 
-/* Fish 1: enters from left, passes row1 col2, exits at row2 col4 (right edge) */
+/* Ryba 1: wchodzi z lewej, mija wiersz 1 kol. 2, wychodzi przy wierszu 2 kol. 4 (prawa krawędź) */
 .gallery .up {
     background-image: url("resources/fish-3322230_1920.jpg");
     left: 0;
-    top: 0; /* row 1 */
-    animation: swim_lr_w1k2 var(--swimDur) linear infinite; /* left -> right across row 1 */
-    border: 2px solid rgba(255,255,255,0.35); /* subtle frame */
-    border-radius: 12px; /* match tile rounding */
+    top: 0; /* wiersz 1 */
+    animation: swim_lr_w1k2 var(--swimDur) linear infinite; /* lewo -> prawo wzdłuż wiersza 1 */
+    border: 2px solid rgba(255,255,255,0.35); /* subtelna ramka */
+    border-radius: 12px; /* jak zaokrąglenie kafla */
     box-shadow: 0 4px 12px rgba(0,0,0,.25);
-    z-index: -3; /* one level deeper than the other fish */
+    z-index: -3; /* o jeden poziom głębiej niż inne ryby */
 }
 
-/* Fish 2: enters from right, first on row3 col3, exits at row4 col1 (left edge) */
+/* Ryba 2: wchodzi z prawej, pojawia się na wierszu 3 kol. 3, wychodzi przy wierszu 4 kol. 1 (lewa krawędź) */
 .gallery .down {
     background-image: url("resources/fish-7391851_1920.jpg");
-    left: 0; /* column 1 */
-    top: 0; /* row 4 */
-    animation: swim_up_w4k1 var(--swimDur) linear infinite; /* bottom -> up through W4K1 */
+    left: 0; /* kolumna 1 */
+    top: 0; /* wiersz 4 */
+    animation: swim_up_w4k1 var(--swimDur) linear infinite; /* dół -> góra przez W4K1 */
 }
 
 
 
 
 
-/* Bring front-facing tiles: w1k1/w2k1 (section 1) and w1k3/w2k3 (section 2) */
+/* Podnieś przednie kafelki: w1k1/w2k1 (sekcja 1) oraz w1k3/w2k3 (sekcja 2) */
 main > section:nth-of-type(1),
 main > section:nth-of-type(2) {
-    z-index: 3; /* move to the very front above other tiles/overlays */
+    z-index: 3; /* na sam przód ponad innymi kaflami/nakładkami */
 }
 
 
-/* Extra tiles styled like sections */
+/* Dodatkowe kafelki w stylu sekcji */
 .tile.extra {
-    background: #0f1724; /* opaque panel, same as sections */
-    border: 1px solid #1b2a3a; /* opaque border, same as sections */
+    background: #0f1724; /* nieprzezroczysty panel, jak sekcje */
+    border: 1px solid #1b2a3a; /* nieprzezroczysta ramka, jak sekcje */
     border-radius: 0;
-    position: relative; /* enable z-index */
-    z-index: 1; /* above gallery */
-    padding: 0.5rem 0.75rem; /* match section padding for content tiles */
-    overflow: auto; /* allow scroll if content overflows */
+    position: relative; /* włącz z-index */
+    z-index: 1; /* nad galerią */
+    padding: 0.5rem 0.75rem; /* padding jak w sekcjach (dla treści) */
+    overflow: auto; /* przewijanie, gdy treść się nie mieści */
 }
 
 /* Ramki (frames) w pustych kratkach siatki, nad galerią ryb */
@@ -326,24 +326,24 @@ main > section:nth-of-type(2) {
 .frame-w3k3 { grid-column: 3; grid-row: 3; }
 .frame-w4k1 { grid-column: 1; grid-row: 4; }
 
-/* w4k3 => row 4, col 3 */
+/* w4k3 => wiersz 4, kolumna 3 */
 .tile-w4k3 { grid-column: 3; grid-row: 4; }
-/* w1k4 => row 1, col 4 */
+/* w1k4 => wiersz 1, kolumna 4 */
 .tile-w1k4 { grid-column: 4; grid-row: 1; }
 
 
-/* Additional synchronized images B and D */
+/* Dodatkowe zsynchronizowane obrazki B i D */
 .gallery .up-b {
     background-image: url("resources/discus-fish-1943755_1920.jpg");
-    left: 0; /* start off-screen right */
-    top: 0; /* row 3 */
+    left: 0; /* start poza ekranem po prawej */
+    top: 0; /* wiersz 3 */
     width: var(--cellW);
     height: var(--cellH);
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,.25);
     border: 2px solid rgba(255,255,255,0.3);
-    animation: swim_rl_w3k3 var(--swimDur) linear infinite; /* right -> left across row 3 */
-    z-index: -2; /* between upper and lower fish depths */
+    animation: swim_rl_w3k3 var(--swimDur) linear infinite; /* prawa -> lewa wzdłuż wiersza 3 */
+    z-index: -2; /* między poziomami głębokości ryb */
 }
 
 .gallery .down-d {
@@ -361,55 +361,55 @@ main > section:nth-of-type(2) {
 
 
 
-/* New directional keyframes per window requirement */
+/* Nowe klatki kluczowe kierunków zgodnie z układem okien siatki */
 @keyframes swim_lr_w1k2 {
     0% {
         left: calc(-1 * var(--cellW));
-        top: 0; /* row 1 */
+        top: 0; /* wiersz 1 */
         transform: none;
     }
     100% {
         left: var(--gridW);
-        top: 0; /* row 1 */
+        top: 0; /* wiersz 1 */
         transform: none;
     }
 }
 
 @keyframes swim_up_w4k1 {
     0% {
-        left: 0; /* column 1 */
-        top: var(--gridH); /* start off-screen bottom */
+        left: 0; /* kolumna 1 */
+        top: var(--gridH); /* start poza ekranem na dole */
         transform: none;
     }
     100% {
-        left: 0; /* column 1 */
-        top: calc(-1 * var(--cellH)); /* exit off-screen top */
+        left: 0; /* kolumna 1 */
+        top: calc(-1 * var(--cellH)); /* wyjście poza ekranem u góry */
         transform: none;
     }
 }
 
 @keyframes swim_down_w2k4 {
     0% {
-        left: calc(3 * (var(--cellW) + var(--gap))); /* column 4 */
-        top: calc(-1 * var(--cellH)); /* start off-screen top */
+        left: calc(3 * (var(--cellW) + var(--gap))); /* kolumna 4 */
+        top: calc(-1 * var(--cellH)); /* start poza ekranem u góry */
         transform: none;
     }
     100% {
-        left: calc(3 * (var(--cellW) + var(--gap))); /* column 4 */
-        top: var(--gridH); /* exit off-screen bottom */
+        left: calc(3 * (var(--cellW) + var(--gap))); /* kolumna 4 */
+        top: var(--gridH); /* wyjście poza ekranem na dole */
         transform: none;
     }
 }
 
 @keyframes swim_rl_w3k3 {
     0% {
-        left: var(--gridW); /* start off-screen right */
-        top: calc(2 * (var(--cellH) + var(--gap))); /* row 3 */
+        left: var(--gridW); /* start poza ekranem po prawej */
+        top: calc(2 * (var(--cellH) + var(--gap))); /* wiersz 3 */
         transform: scaleX(-1);
     }
     100% {
-        left: calc(-1 * var(--cellW)); /* exit off-screen left */
-        top: calc(2 * (var(--cellH) + var(--gap))); /* row 3 */
+        left: calc(-1 * var(--cellW)); /* wyjście poza ekranem po lewej */
+        top: calc(2 * (var(--cellH) + var(--gap))); /* wiersz 3 */
         transform: scaleX(-1);
     }
 }
@@ -449,11 +449,8 @@ main > section:nth-of-type(2) {
     }
 }
 
-/* Default desktop/tablet view stays as-is (no shrinking!) */
-/* Optionally, apply light enhancements only if needed */
 @media (min-width: 1600px) {
     h1 {
         font-size: 2rem;
     }
 }
-

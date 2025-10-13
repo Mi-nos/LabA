@@ -1,107 +1,182 @@
-/* Style 2: Header + 2x2 grid with 4 HTML sections + Footer */
+
 :root {
-  --bg: #101418;
-  --fg: #e8eef5;
-  --muted: #9fb3c8;
-  --accent: #ffffff;
-    --red: #F23337;
-    --blue: #317CFF;
-    --green: #22c110;
-    --yellow: #eee208 /* will be overridden per cell when needed */
+  --bg: #12281d;           /* ciemna zieleń (jaśniejsza) */
+  --fg: #dbeafe;           /* jasny niebieskawy tekst */
+  --muted: #b3c7e6;        /* stonowany niebieskawy */
+  --primary: #6ec3ff;      /* akcent niebieski */
+  --primary-2: #93c5fd;    /* jasny niebieski */
+  --ink: rgba(0,0,0,0.5);
+
+  --surface: #1b3a29;      /* tło kart (zielonkawe) */
+  --surface-2: #234e37;    /* tło hover (zielonkawe) */
+  --line: #2e4a3a;         /* delikatne obramowanie (zielone) */
+
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow-1: 0 8px 24px rgba(0,0,0,0.35);
+  --shadow-2: 0 4px 16px rgba(0,0,0,0.25);
+
+  --maxw: 1400px;
+  --gutter: clamp(12px, 3vw, 24px);
 }
 
-html { box-sizing: border-box; }
-*, *::before, *::after { box-sizing: inherit; }
-
+* { box-sizing: border-box; }
+html { color-scheme: dark; }
 body {
   margin: 0;
-  color: var(--fg);
-  background: var(--bg);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   line-height: 1.6;
-
-  /* Page layout: header | main | footer */
-  height: 100vh;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 8px;
-  padding: 8px;
-}
-
-header, footer {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 10px;
-  padding: 10px 12px;
-}
-
-h1 { margin: 0; font-size: 1.6rem; }
-
-/* In style-2: hide original "Oceanarium" and show lorem ipsum visually */
-header h1 { color: transparent; position: relative; }
-header h1::after { content: "Lorem ipsum dolor sit amet"; color: var(--fg); font-size: 1.6rem; }
-
-main {
-  /* 4x4 grid with colored blocks centered in middle rows/columns */
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-
-  gap: 8px;
-  min-height: 0; /* allow children to size/scroll */
-}
-
-/* Base look for sections inside the 2x2 grid */
-main > section {
-  margin: 0;
-  border-radius: 8px;
-  padding: 10px 12px;
-  overflow: auto; /* internal scroll if content is tall */
-  border: none;   /* clean color tiles */
   color: var(--fg);
-
-  will-change: background-color;
+  background: radial-gradient(1200px 600px at 10% -10%, rgba(120,230,180,0.22), transparent 60%),
+              radial-gradient(1000px 700px at 110% 10%, rgba(90,200,140,0.18), transparent 60%),
+              var(--bg);
+  min-height: 100svh;
 }
 
-main > section:nth-of-type(1) { grid-area: 2 / 2; background-color: var(--red); --fg: #ffffff; --accent: #ffffff; color: var(--fg); animation: colorShift 2s linear infinite; }
-main > section:nth-of-type(2) { grid-area: 2 / 3; background-color: var(--green); --fg: #ffffff; --accent: #ffffff; color: var(--fg); animation: colorShift 2s linear infinite; }
-main > section:nth-of-type(3) { grid-area: 3 / 2; background-color: var(--yellow); --fg: #111111; --accent: #111111; color: var(--fg); animation: colorShift 2s linear infinite; }
-main > section:nth-of-type(4) { grid-area: 3 / 3; background-color: var(--blue); --fg: #ffffff; --accent: #ffffff; color: var(--fg); animation: colorShift 2s linear infinite; }
+img { max-width: 100%; display: block; }
+a { color: var(--primary); text-decoration-thickness: 2px; }
+a:hover { color: var(--primary-2); }
 
-/* Headings inside sections use the per-cell accent for clarity */
-main > section h2 { margin-top: 0; color: var(--accent); }
-main > section h3 { color: color-mix(in oklab, var(--accent), var(--fg) 60%); }
+/* 3) Szkielet strony */
+.wrapper { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
 
-/* Optional: simplify list markers for readability on colored tiles */
-ul li::marker { content: "• "; }
+/* Gdy brak .wrapper: styluj bezpośrednio header/main/footer */
+body > header,
+body > main,
+body > footer { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
 
-/* Keep footer text subtle */
-footer p { margin: 0; color: var(--muted); }
+/* Nagłówek */
+header { padding: clamp(20px, 5vw, 56px) 0 clamp(10px, 2vw, 18px); position: relative; }
+header::before {
+  content: "";
+  position: absolute; inset: 0 0 auto 0; height: 220px; z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(120,230,180,0.25), rgba(120,230,180,0) 65%),
+    url("resources/blue-5059268_1920.jpg") center/cover no-repeat fixed;
+  mask-image: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0));
+  opacity: 0.55;
+}
 
-/* Style-2 focuses on header, 4 sections grid, footer. Hide extras. */
+header h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 2.2rem + 1.8vw, 3.6rem);
+  letter-spacing: 0.02em;
+  font-weight: 800;
+  line-height: 1.1;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.2), 0 12px 24px rgba(0,0,0,0.35);
+  color: #72b7ff;
+}
+
+/* Cienka linia pod nagłówkiem */
+header::after {
+  content: "";
+  display: block;
+  height: 1px;
+  margin-top: clamp(14px, 3vw, 24px);
+  background: linear-gradient(90deg, transparent, var(--line), transparent);
+}
+
+/* 4) Główna część */
+main { 
+  margin: clamp(16px, 3vw, 24px) 0 clamp(28px, 5vw, 60px);
+}
+
+/* Sekcje jako karty w responsywnej siatce */
+main { display: grid; gap: clamp(14px, 2.4vw, 24px); }
+@media (min-width: 780px) {
+  main { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1200px) {
+  main { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1400px) {
+  main { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Najpierw 4 sekcje; reszta później */
+main > section {
+  --card-grad: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+  background: var(--card-grad), var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: clamp(14px, 2.4vw, 22px) clamp(14px, 2.4vw, 22px);
+  box-shadow: var(--shadow-1);
+  backdrop-filter: saturate(120%) blur(2px);
+}
+
+/* Dekoracyjne uniesienie przy hover (bez ruchu przy reduce) */
+@media (prefers-reduced-motion: no-preference) {
+  main > section { transition: transform .25s ease, background .3s ease, border-color .3s ease, box-shadow .3s ease; }
+  main > section:hover { transform: translateY(-3px); background: var(--card-grad), var(--surface-2); box-shadow: var(--shadow-2); border-color: color-mix(in oklab, var(--line), var(--primary) 30%); }
+}
+
+/* Nagłówki i tekst — treść bez zmian */
+main h2 {
+  margin: 0 0 .25rem 0;
+  font-size: clamp(1.2rem, 0.9rem + 1vw, 1.7rem);
+  letter-spacing: .01em; color: var(--primary);
+}
+main h3 { margin: .4rem 0 .2rem; color: var(--primary-2); font-size: clamp(1rem, 0.9rem + .4vw, 1.25rem); }
+main p { margin: 0 0 .7rem; color: var(--fg); }
+
+/* Lists */
+main ul, main ol { margin: .35rem 0 .9rem .95rem; padding: 0; }
+main li { margin: .15rem 0; color: var(--muted); }
+main ol { list-style: decimal; }
+main ul { list-style: disc; }
+
+/* Artykuły w sekcjach */
+article + article { margin-top: .75rem; padding-top: .5rem; border-top: 1px dashed var(--line); }
+
+time { color: color-mix(in oklab, var(--muted), var(--primary) 35%); font-variant-numeric: tabular-nums; }
+
+/* Definicje w dodatkowym kafelku */
+dl { margin: .25rem 0 .5rem; }
+ dt { color: var(--primary); font-weight: 700; }
+ dd { margin: 0 0 .4rem .75rem; color: var(--muted); }
+
+/* 5) Ukryj dekoracje z innego stylu */
 .tile, .frame, .gallery { display: none !important; }
 
-/* In style-2: replace text of all sections with lorem ipsum visually */
-/* Hide all direct children inside each section and show a placeholder paragraph */
-main > section > * { display: none !important; }
+/* 6) Stopka */
+footer { padding: 28px 0 40px; color: var(--muted); }
+footer p { margin: 0; text-align: center; opacity: .9; }
 
-main > section::after {
-  content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
-  display: block;
-  color: var(--fg);
-  line-height: 1.6;
-  /* keep padding consistent with section */
-  /* Sections already have padding, so no extra padding here to avoid double spacing */
+body::before, body::after {
+  content: ""; position: fixed; pointer-events: none; z-index: 0; opacity: .4;
+  width: 220px; height: 220px; filter: blur(6px) saturate(120%);
+}
+body::before { left: -60px; top: -60px; background: radial-gradient(closest-side, rgba(120,230,180,0.30), transparent 70%); }
+body::after  { right: -60px; bottom: -60px; background: radial-gradient(closest-side, rgba(90,200,140,0.26), transparent 70%); }
+
+/* 8) focus i zaznaczenie */
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+::selection { background: color-mix(in oklab, var(--primary), #000 30%); color: #fff; }
+
+/* 10) Ustawienia mobilne */
+@media (max-width: 520px) {
+  body > header, body > main, body > footer { padding-left: 14px; padding-right: 14px; }
+  main { display: block; }
+  main > section { margin-bottom: 14px; }
 }
 
-@keyframes colorShift {
-  0%, 24% { background-color: var(--red); }
-  25%, 49% { background-color: var(--green); }
-  50%, 74% { background-color: var(--blue); }
-  75%, 99% { background-color: var(--green); }
-  100% { background-color: var(--red); }
+main > section { --card-grad: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)); }
+
+@media (min-width: 780px) and (max-width: 1199.98px) {
+  main > section:nth-child(2n+1) { --card-grad: linear-gradient(180deg, rgba(120,230,180,0.26), rgba(120,230,180,0.00) 70%); }
+  main > section:nth-child(2n)   { --card-grad: linear-gradient(180deg, rgba(90,200,140,0.24), rgba(90,200,140,0.00) 70%); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  main > section { animation: none !important; }
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  main > section:nth-child(3n+1) { --card-grad: linear-gradient(180deg, rgba(120,230,180,0.26), rgba(120,230,180,0.00) 70%); }
+  main > section:nth-child(3n+2) { --card-grad: linear-gradient(180deg, rgba(147,197,253,0.24), rgba(147,197,253,0.00) 70%); }
+  main > section:nth-child(3n)   { --card-grad: linear-gradient(180deg, rgba(90,200,140,0.24),  rgba(90,200,140,0.00) 70%); }
+}
+
+@media (min-width: 1400px) {
+  main { /* już 4 kolumny */ }
+  main > section:nth-child(4n+1) { --card-grad: linear-gradient(180deg, rgba(120,230,180,0.28), rgba(120,230,180,0.00) 70%); }
+  main > section:nth-child(4n+2) { --card-grad: linear-gradient(180deg, rgba(147,197,253,0.26), rgba(147,197,253,0.00) 70%); }
+  main > section:nth-child(4n+3) { --card-grad: linear-gradient(180deg, rgba(90,200,140,0.26),  rgba(90,200,140,0.00) 70%); }
+  main > section:nth-child(4n+4) { --card-grad: linear-gradient(180deg, rgba(147,197,253,0.22), rgba(147,197,253,0.00) 70%); }
 }
