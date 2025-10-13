@@ -454,3 +454,36 @@ main > section:nth-of-type(2) {
         font-size: 2rem;
     }
 }
+
+/* Niskie, szerokie ekrany (np. 1440x375) – ukryj galerię ryb */
+@media (max-height: 420px) and (min-width: 1200px) and (orientation: landscape) {
+    /* Ukryj dekoracje i uprość widok */
+    .gallery, .frame, .tile.extra { display: none !important; }
+
+    /* Kompaktowy układ krawędzi strony */
+    body { padding: 0.25rem; }
+    header, footer { padding: 0.25rem 0.5rem; }
+    h1 { font-size: 1.25rem; }
+
+    /* Zmniejszone fale w nagłówku i stopce */
+    header::before, header::after, footer::before, footer::after {
+        height: 32px;
+        background-size: 160px 32px;
+    }
+    header::before, header::after { bottom: -8px; top: auto; }
+    footer::before, footer::after { top: -8px; }
+
+    /* Jednorządowy układ: cztery kolumny obok siebie */
+    main {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: 1fr;
+        gap: 0.5rem;
+    }
+
+    /* Sekcje: każda w swojej kolumnie, pełna wysokość rzędu */
+    main > section { overflow: auto; padding: 0.4rem 0.5rem; }
+    main > section:nth-of-type(1) { grid-column: 1; grid-row: 1; }
+    main > section:nth-of-type(2) { grid-column: 2; grid-row: 1; }
+    main > section:nth-of-type(3) { grid-column: 3; grid-row: 1; }
+    main > section:nth-of-type(4) { grid-column: 4; grid-row: 1; }
+}
