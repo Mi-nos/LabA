@@ -1,230 +1,96 @@
-/* Podstawowe style dla test.html */
+/* Style 2: Header + 2x2 grid with 4 HTML sections + Footer */
 :root {
-    --bg: #0b0f14;
-    --fg: #e8eef5;
-    --muted: #9fb3c8;
-    --accent: #3aa0ff;
+  --bg: #101418;
+  --fg: #e8eef5;
+  --muted: #9fb3c8;
+  --accent: #ffffff; /* will be overridden per cell when needed */
 }
 
-html {
-    box-sizing: border-box;
-}
-
-*, *::before, *::after {
-    box-sizing: inherit;
-}
+html { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: inherit; }
 
 body {
-    margin: 0;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    line-height: 1.6;
-    color: var(--fg);
-    background: #0b0f14; /* solid color matching the top of the page */
-    padding: 0 1rem;
+  margin: 0;
+  color: var(--fg);
+  background: var(--bg);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height: 1.6;
+
+  /* Page layout: header | main | footer */
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 8px;
+  padding: 8px;
 }
 
 header, footer {
-    background: rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
-    margin: 1rem auto;
-    max-width: 900px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 10px 12px;
 }
 
-h1 {
-    margin: 0;
-    font-size: 1.75rem;
-}
+h1 { margin: 0; font-size: 1.6rem; }
+
+/* In style-2: hide original "Oceanarium" and show lorem ipsum visually */
+header h1 { color: transparent; position: relative; }
+header h1::after { content: "Lorem ipsum dolor sit amet"; color: var(--fg); font-size: 1.6rem; }
 
 main {
-    max-width: 900px;
-    margin: 1rem auto 2rem;
+  /* 2x2 grid for the four sections from HTML */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  min-height: 0; /* allow children to size/scroll */
 }
 
-section {
-    background: rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
-    margin: 0; /* gap on grid will handle spacing */
+/* Base look for sections inside the 2x2 grid */
+main > section {
+  margin: 0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow: auto; /* internal scroll if content is tall */
+  border: none;   /* clean color tiles */
+  color: var(--fg);
 }
 
-h2 {
-    margin-top: 0;
-    color: var(--accent);
-}
+/* Place the first four sections explicitly into the 2x2 grid */
+main > section:nth-of-type(1) { grid-area: 1 / 1; }
+main > section:nth-of-type(2) { grid-area: 1 / 2; }
+main > section:nth-of-type(3) { grid-area: 2 / 1; }
+main > section:nth-of-type(4) { grid-area: 2 / 2; }
 
-h3 {
-    color: var(--muted);
-    font-weight: 600;
-}
+/* Per-cell colors for style-2: 1=Red, 2=Green, 3=Yellow, 4=Blue */
+/* Also override text variables for readability on each background */
+main > section:nth-of-type(1) { background: #d32f2f; --fg: #ffffff; --accent: #ffffff; color: var(--fg); }
+main > section:nth-of-type(2) { background: #388e3c; --fg: #ffffff; --accent: #ffffff; color: var(--fg); }
+main > section:nth-of-type(3) { background: #ffeb3b; --fg: #111111; --accent: #111111; color: var(--fg); }
+main > section:nth-of-type(4) { background: #1976d2; --fg: #ffffff; --accent: #ffffff; color: var(--fg); }
 
-ol {
-    padding-left: 1.25rem;
-}
+/* Headings inside sections use the per-cell accent for clarity */
+main > section h2 { margin-top: 0; color: var(--accent); }
+main > section h3 { color: color-mix(in oklab, var(--accent), var(--fg) 60%); }
 
-li {
-    margin: 0.25rem 0;
-}
+/* Optional: simplify list markers for readability on colored tiles */
+ul li::marker { content: "• "; }
 
-footer p {
-    margin: 0;
-    color: var(--muted);
-}
+/* Keep footer text subtle */
+footer p { margin: 0; color: var(--muted); }
 
-/* Text overrides for style-2 without JS: replace page copy via CSS */
-:root {
-    /* Teksty dla stylu 2 — Wypożyczalnia płyt DVD */
-    --s2-h1: "Wypożyczalnia płyt DVD";
-    --s2-h2-1: "O nas";
-    --s2-h2-2: "Oferta";
-    --s2-h2-3: "Cennik";
-    --s2-h2-4: "Kontakt i rezerwacje";
-    --s2-sec1: "Jesteśmy lokalną wypożyczalnią DVD działającą od 2004 roku. Znajdziesz u nas klasykę kina, najnowsze premiery, seriale oraz kino familijne.\A\A Dbamy o stan płyt, a każdy tytuł otrzymuje etui ochronne. Oferujemy rezerwacje telefoniczne i online oraz program lojalnościowy dla stałych klientów.";
-    --s2-sec2: "• Nowości filmowe — aktualne premiery na DVD\A • Klasyka i hity wszech czasów\A • Seriale i pakiety sezonów\A • Filmy dla dzieci i cała rodzina\A\A Godziny otwarcia\A Pon–Pt: 10:00–20:00\A Sob: 10:00–18:00\A Niedz: nieczynne";
-    --s2-sec3: "Film katalogowy: 6 zł / 24 h\A Nowość: 8 zł / 24 h\A Weekend (pt–pon): 10 zł\A Kaucja za kartę: 20 zł (zwrotna)\A Opłata za spóźnienie: 4 zł / dzień\A\A Zniżki\A • -10% dla studentów i seniorów (z dokumentem)\A • Co piąty wypożyczony tytuł — gratis";
-    --s2-sec4: "Adres: ul. Filmowa 7, 00-123 Warszawa\A Telefon: 500 600 700\A E-mail: kontakt@dvdclub.pl\A Rezerwacje przyjmujemy 24/7 online lub telefonicznie w godzinach otwarcia.";
-    --s2-footer: "© 2025 Wypożyczalnia DVD — Zapraszamy!";
-}
+/* Style-2 focuses on header, 4 sections grid, footer. Hide extras. */
+.tile, .frame, .gallery { display: none !important; }
 
-/* Header: hide original text visually and inject replacement */
-header h1 { position: relative; color: transparent; text-shadow: none; text-align: center; }
-header h1::after {
-    content: var(--s2-h1, "Oceanarium — Styl 2");
-    position: relative;
-    display: inline;
-    color: var(--fg);
-}
+/* In style-2: replace text of all sections with lorem ipsum visually */
+/* Hide all direct children inside each section and show a placeholder paragraph */
+main > section > * { display: none !important; }
 
-/* Sections: replace entire inner content with a single text block for style-2 */
-main > section { position: relative; }
-main > section > * { /* hide original children while keeping box metrics */
-    display: none !important;
-}
-main > section:nth-of-type(1)::before,
-main > section:nth-of-type(2)::before,
-main > section:nth-of-type(3)::before,
-main > section:nth-of-type(4)::before {
-    content: "";
-}
-
-/* Provide specific replacement texts per section */
-main > section:nth-of-type(1)::after,
-main > section:nth-of-type(2)::after,
-main > section:nth-of-type(3)::after,
-main > section:nth-of-type(4)::after {
-    display: block;
-    white-space: pre-line; /* allow \A as line breaks */
-    font: inherit;
-    color: var(--fg);
-}
-
-main > section:nth-of-type(1)::after { content: var(--s2-sec1, "Sekcja 1 (styl 2)"); }
-main > section:nth-of-type(2)::after { content: var(--s2-sec2, "Sekcja 2 (styl 2)"); }
-main > section:nth-of-type(3)::after { content: var(--s2-sec3, "Sekcja 3 (styl 2)"); }
-main > section:nth-of-type(4)::after { content: var(--s2-sec4, "Sekcja 4 (styl 2)"); }
-
-/* Visible section headings (h2-like) for style-2 */
-main > section::before {
-    display: block;
-    content: "";
-    margin: 0 0 0.5rem;
-    font-size: 1.5rem; /* bigger to look like H2 */
-    line-height: 1.2;
-    font-weight: 700;
-    color: var(--accent);
-}
-main > section:nth-of-type(1)::before { content: var(--s2-h2-1, "O nas"); }
-main > section:nth-of-type(2)::before { content: var(--s2-h2-2, "Oferta"); }
-main > section:nth-of-type(3)::before { content: var(--s2-h2-3, "Cennik"); }
-main > section:nth-of-type(4)::before { content: var(--s2-h2-4, "Kontakt i rezerwacje"); }
-
-/* Footer: swap text inside <p> */
-footer p { position: relative; color: transparent; text-shadow: none; }
-footer p::after {
-    content: var(--s2-footer, "+ — styl 2");
-    display: inline;
-    color: var(--muted);
-}
-
-
-/* DVD logo — flipAround path around 2x2 grid, no JS. */
-@keyframes flipAround {
-    0% {
-        left: 0; top: 0;
-        transform-origin: right;
-        transform: none;
-    }
-    25% {
-        left: calc(50% - var(--tile)); top: 0;
-        transform-origin: right;
-        transform: rotateY(-180deg);
-    }
-    50% {
-        left: calc(50% - var(--tile)); top: calc(50% - var(--tile));
-        transform-origin: bottom;
-        transform: rotateX(-180deg);
-    }
-    75% {
-        left: 0; top: calc(50% - var(--tile));
-        transform-origin: left;
-        transform: rotateY(180deg);
-    }
-    100% {
-        left: 0; top: 0;
-        transform-origin: top;
-        transform: rotateX(180deg);
-    }
-}
-
-/* Disable previous global bouncing logo */
-body::after { content: none !important; }
-
-/* Place the animated DVD tile as a background element within the 2×2 grid area */
-main { position: relative; }
-main::after {
-    --tile: 200px;
-    content: "DVD";
-    position: absolute;
-    left: 0; top: 0;
-    width: var(--tile);
-    height: var(--tile);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 22px;
-    letter-spacing: 2px;
-    color: #fff;
-    background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%),
-        linear-gradient(135deg, #222 0%, #2f2f2f 100%);
-    border-radius: 12px;
-    border: 2px solid rgba(255,255,255,.25);
-    box-shadow: 0 8px 24px rgba(0,0,0,.35), inset 0 0 0 3px rgba(255,255,255,.08);
-    animation: flipAround 8s linear infinite;
-    transform-origin: right;
-    pointer-events: none;
-    z-index: 0; /* below sections */
-    mix-blend-mode: screen;
-}
-
-/* Slightly smaller tile on narrow screens */
-@media (max-width: 600px) {
-    main::after { --tile: 140px; font-size: 18px; border-radius: 10px; }
-}
-
-
-/* Grid 2x2 for style-2: four sections filling the grid */
-main {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, auto);
-    gap: 1rem;
-}
-
-/* Ensure only sections participate in the grid; hide extra tiles/frames/gallery from style-1 */
-main > :not(section) {
-    display: none !important;
+main > section::after {
+  content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+  display: block;
+  color: var(--fg);
+  line-height: 1.6;
+  /* keep padding consistent with section */
+  /* Sections already have padding, so no extra padding here to avoid double spacing */
 }
