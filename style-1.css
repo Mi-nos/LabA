@@ -45,12 +45,12 @@ main {
 }
 
 section {
-    background: #0f1724; /* opaque panel */
-    border: 1px solid #1b2a3a; /* opaque border */
+    background: #0f1724;
+    border: 1px solid #1b2a3a;
     border-radius: 0;
-    padding: 0.5rem 0.75rem; /* reduced padding in each grid cell */
+    padding: 0.5rem 0.75rem;
     margin-bottom: 1rem;
-    position: relative; /* create stacking context above gallery */
+    position: relative;
     z-index: 1;
 }
 
@@ -83,7 +83,7 @@ ul li::marker {
     content: "🐟 ";
 }
 
-/* Layout grid to fit everything without page scroll */
+/* Miało być bez scrolli, ale to jest lepsze */
 body {
     height: 100vh;
     display: grid;
@@ -212,7 +212,7 @@ header::after {
 /* Front wave (darker) */
 header::before {
     opacity: 0.9;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M0 30 Q 30 0 60 30 T 120 30 V60 H0 Z' fill='%23062a44'/></svg>");
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60' preserveAspectRatio='none'><path d='M0 30 Q 30 0 60 30 T 120 30 V60 H0 Z' fill='%23062a44'/></svg>");
     animation: wave 14s linear infinite;
 }
 
@@ -246,7 +246,7 @@ main {
     pointer-events: none;
     z-index: 0; /* above main background, behind sections */
     background: transparent;
-    --swimDur: 14s; /* unified duration for all fish */
+    --swimDur: 8s; /* unified duration for all fish; reduced to shorten idle gap between passes */
 }
 
 /* Each column becomes a moving fish tile */
@@ -264,7 +264,7 @@ main {
 /* Fish 1: enters from left, passes row1 col2, exits at row2 col4 (right edge) */
 .gallery .up {
     background-image: url("resources/fish-3322230_1920.jpg");
-    left: calc(-1 * var(--cellW));
+    left: 0;
     top: 0; /* row 1 */
     animation: swim_lr_w1k2 var(--swimDur) linear infinite; /* left -> right across row 1 */
     border: 2px solid rgba(255,255,255,0.35); /* subtle frame */
@@ -277,7 +277,7 @@ main {
 .gallery .down {
     background-image: url("resources/fish-7391851_1920.jpg");
     left: 0; /* column 1 */
-    top: calc(3 * (var(--cellH) + var(--gap))); /* row 4 */
+    top: 0; /* row 4 */
     animation: swim_up_w4k1 var(--swimDur) linear infinite; /* bottom -> up through W4K1 */
 }
 
@@ -320,7 +320,7 @@ main > section:nth-of-type(2) {
     inset: 0;
     background: #0f1724; /* zakryj całą komórkę kolorem tła sekcji */
     /* Wytnij okrąg w środku; reszta pozostaje kryjąca. */
-    mask: radial-gradient(circle at 50% 50%, transparent 55%, #000 40%);
+    mask: radial-gradient(circle at 50% 50%, transparent 40%, #000 0%);
 }
 
 /* Pozycje ramek: */
@@ -329,8 +329,6 @@ main > section:nth-of-type(2) {
 .frame-w3k3 { grid-column: 3; grid-row: 3; }
 .frame-w4k1 { grid-column: 1; grid-row: 4; }
 
-/* w3k1 => row 3, col 1 */
-.tile-w3k1 { grid-column: 1; grid-row: 3; }
 /* w4k3 => row 4, col 3 */
 .tile-w4k3 { grid-column: 3; grid-row: 4; }
 /* w1k4 => row 1, col 4 */
@@ -340,8 +338,8 @@ main > section:nth-of-type(2) {
 /* Additional synchronized images B and D */
 .gallery .up-b {
     background-image: url("resources/discus-fish-1943755_1920.jpg");
-    left: var(--gridW); /* start off-screen right */
-    top: calc(2 * (var(--cellH) + var(--gap))); /* row 3 */
+    left: 0; /* start off-screen right */
+    top: 0; /* row 3 */
     width: var(--cellW);
     height: var(--cellH);
     border-radius: 12px;
@@ -353,8 +351,8 @@ main > section:nth-of-type(2) {
 
 .gallery .down-d {
     background-image: url("resources/jellyfish-3814142_1920.jpg");
-    left: calc(3 * (var(--cellW) + var(--gap))); /* column 4 */
-    top: 0; /* row 1 start for downward travel */
+    left: 0;
+    top: 0;
     width: var(--cellW);
     height: var(--cellH);
     border-radius: 12px;
@@ -410,11 +408,39 @@ main > section:nth-of-type(2) {
     0% {
         left: var(--gridW); /* start off-screen right */
         top: calc(2 * (var(--cellH) + var(--gap))); /* row 3 */
-        transform: scaleY(-1);
+        transform: scaleX(-1);
     }
     100% {
         left: calc(-1 * var(--cellW)); /* exit off-screen left */
         top: calc(2 * (var(--cellH) + var(--gap))); /* row 3 */
-        transform: scaleY(-1);
+        transform: scaleX(-1);
     }
+}
+
+
+/* Responsive adjustments: minimalist support for ~375px phones and ~1440px desktops */
+@media (max-width: 420px) {
+    /* Allow natural page scroll on small screens */
+    body { height: auto; overflow: auto; padding: 0.5rem; }
+
+    /* Stack content vertically; grid becomes a linear flow */
+    main { display: block; margin: 0.5rem 0 1rem; }
+
+    /* Keep content readable and compact */
+    header, footer { padding: 0.75rem 1rem; }
+    section, .tile.extra { margin-bottom: 0.75rem; padding: 0.5rem 0.75rem; }
+
+    /* Hide decorative layers on small screens */
+    .gallery, .frame { display: none !important; }
+}
+
+@media (min-width: 1400px) {
+    /* Constrain and center the main content area for wide viewports */
+    header, footer, main { max-width: 1280px; margin-left: auto; margin-right: auto; }
+
+    /* Slightly increase outer padding for breathing room on desktop */
+    body { padding: 0 2rem; }
+
+    /* Tiny typographic upscale */
+    h1 { font-size: 2rem; }
 }
