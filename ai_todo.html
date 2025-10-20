@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista To-Do</title>
+   <link rel="stylesheet" href="ai_todo.style.css" />
+</head>
+<body>
+<main class="todo-grid">
+    <!-- wyszukiwarka -->
+    <div class="search">
+        <label for="search">Szukaj:</label>
+        <input id="search" type="search" placeholder="Wyszukaj zadania..." />
+    </div>
+
+    <!-- lista zadań - nie ma znaczenia bo pola są inicjalizowane z js -->
+    <div class="tasks-viewport">
+        <ul class="tasks" id="taskList">
+            <li>
+                <span class="task-name">Kupić mleko</span>
+                <input type="date" class="task-date" value="2025-10-20" />
+                <button class="del">🗑️</button>
+            </li>
+            <li>
+                <span class="task-name">Znaleźć praktyki</span>
+                <input type="date" class="task-date" value="2025-10-30" />
+                <button class="del">🗑️</button>
+            </li>
+            <li>
+                <span class="task-name">Zrobić zadanie z JS</span>
+                <input type="date" class="task-date" value="2025-10-22" />
+                <button class="del">🗑️</button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- tworzenie zadań -->
+    <div class="new-task">
+        <label for="newTask">Dodaj zadanie:</label>
+        <input id="newTask" type="text" placeholder="Nazwa..." />
+        <label for="dueDate">Termin:</label>
+        <input id="dueDate" type="date" />
+        <button id="addTaskBtn" type="button">Utwórz</button>
+    </div>
+</main>
+ <script src="ai_todo.js"></script>
+</body>
+</html>
+
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+todo, input po naciśnięciu
+localstorage,
+zdjęcie albo kolor w tle todo, antyplagiatowo
+ss możliwość ustawienia czasu i taska
+pokazać w ss localstorage tak, żeby było widać zmiany
+bez reacta, bez bibliotek, czysty js
+-->
