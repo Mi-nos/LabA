@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa-Puzzle</title>
+    <link rel="stylesheet" href="puzzle.css">
+    <link rel="stylesheet" href="leaflet-1.7.1/leaflet.css">
+</head>
+
+<body>
+    <div class="grid">
+        <div class="cell left-up">
+            <button id="saveButton">Zapisz mapę</button>
+            <button class="getLocation">Moja lokalizacja</button>
+            <div id="map" class="map"></div> <!-- tu musi być div bo dynamiczna mapa leaflet -->
+        </div>
+        <div class="cell right-up">
+            <button class="invisible">Nie widać!</button>
+            <button class="invisible">Nie widać!</button>
+            <canvas id="rasterMap" class="map"></canvas>
+        </div>
+        <div class="cell left-down">
+            <button class="invisible">Nie widać!</button>
+            <button class="invisible">Nie widać!</button>
+            <div id="puzzlePieces" class="map puzzle-area"></div>
+        </div>
+
+        <div class="cell right-down">
+            <button class="invisible">Nie widać!</button>
+            <button class="invisible">Nie widać!</button>
+            <div id="solutionTable" class="map puzzle-area"></div>
+        </div>
+    </div>
+</body>
+
+<script src="puzzle.js"></script>
+<script src="leaflet-1.7.1/leaflet-src.js"></script>
+<script src="leaflet-1.7.1/leaflet-providers.js"></script>
+<script src="leaflet-1.7.1/leaflet-image.js"></script>
+
+</html>
+
+<!-- gridy poboc-->
