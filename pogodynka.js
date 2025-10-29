@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var lat;
     var lon;
-    var API_KEY = "f21023bef09e627ddc3fdbea7063b51f"; //zastąp go potem swoim
+    var API_KEY = "f21023bef09e627ddc3fdbea7063b51f"; //to już jest mój api
 
     const weatherButton = document.getElementById('weather_button');
     const tempEl = document.querySelector('.temperature');
@@ -14,12 +14,92 @@ document.addEventListener('DOMContentLoaded', function () {
     //dla pogody 5 dniowej zrobimy grida 2x3 z 6 dniami
     function updateUI(data) {
         if (!data) return;
+
+        //jeśli dostaniemy odpowiedź requesta na 5 dni
+        if (Array.isArray(data.list) && data.city) {
+            const container = document.querySelector('.container');
+            if (!container) return;
+
+            // usuń stare kafle z poprzedniego requesta
+            const tiles = container.querySelectorAll('.container2');
+            tiles.forEach(function (el, idx) {
+                if (idx > 0) el.remove();
+            });
+
+            const byDate = {};
+            data.list.forEach(function (entry) {
+                const dtTxt = entry.dt_txt || '';
+                const day = dtTxt.split(' ')[0];
+                if (!day) return;
+                if (!byDate[day]) byDate[day] = [];
+                byDate[day].push(entry);
+            });
+
+            const days = Object.keys(byDate).sort().slice(0, 5);
+
+
+            //weź 12:00 albo pierwszy
+            days.forEach(function (day, idx) {
+                const entries = byDate[day];
+                let chosen = entries.find(function (e) { return (e.dt_txt || '').includes('12:00:00'); });
+                if (!chosen) {
+                    chosen = entries[Math.floor(entries.length / 2)] || entries[0];
+                }
+
+                const weather0 = (chosen.weather && chosen.weather[0]) || {};
+                const main = chosen.main || {};
+                const temp = typeof main.temp === 'number' ? Math.round(main.temp) + '°C' : 'brak danych';
+                const desc = weather0.description || 'brak opisu';
+                const iconCode = weather0.icon;
+
+                const tile = document.createElement('div');
+                tile.className = 'container2';
+
+                const info = document.createElement('div');
+                info.className = 'weather-info';
+                try {
+                    const d = new Date(day);
+                    const weekday = d.toLocaleDateString('pl-PL', { weekday: 'long' });
+                    info.textContent = weekday + ' • ' + day;
+                } catch (e) {
+                    info.textContent = day;
+                }
+                //weź ikonki
+                const iconElLocal = document.createElement('div');
+                iconElLocal.className = 'weather-icon';
+                if (iconCode) {
+                    iconElLocal.innerHTML = `<img alt="${desc}" src="https://openweathermap.org/img/wn/${iconCode}@2x.png">`;
+                } else {
+                    iconElLocal.textContent = '—';
+                }
+
+                const tempDiv = document.createElement('div');
+                tempDiv.className = 'temperature';
+                tempDiv.textContent = temp;
+
+                const descDiv = document.createElement('div');
+                descDiv.className = 'description';
+                descDiv.textContent = desc;
+                //nazwy miasta nie dodajemy no bo po co pisać 6x Szczecin?
+
+                tile.appendChild(info);
+                tile.appendChild(iconElLocal);
+                tile.appendChild(tempDiv);
+                tile.appendChild(descDiv);
+
+                container.appendChild(tile);
+            });
+
+            return;
+        }
+
+        // to jest nasza oryginalna komórka z pogodą
         const name = data.name || 'nieznana lokalizacja';
         const main = data.main || {};
         const weather0 = (data.weather && data.weather[0]) || {};
         const temp = typeof main.temp === 'number' ? Math.round(main.temp) + '°C' : 'brak danych';
         const desc = weather0.description || 'brak opisu';
-        const iconCode = weather0.icon; // e.g., "10d"
+        const iconCode = weather0.icon;
 
         if (tempEl) tempEl.textContent = temp;
         if (descEl) descEl.textContent = desc;
@@ -45,6 +125,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             req.onload = function () {
                 if (req.status >= 200 && req.status < 300) {
+                    // Udany request XHR
+                    console.log('XHR JEST OK!', url, 'status:', req.status);
                     try {
                         var data = JSON.parse(req.responseText);
                         resolve(data);
@@ -52,18 +134,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         reject(new Error('Błąd parsowania JSON: ' + e.message));
                     }
                 } else {
-                    reject(new Error('Błąd API: ' + req.status));
+                    reject(new Error('Coś poszło nie tak...: ' + req.status));
                 }
             };
-
-            req.onerror = function () {
-                reject(new Error('Błąd połączenia'));
-            };
-
-            req.ontimeout = function () {
-                reject(new Error('Przekroczono czas oczekiwania'));
-            };
-
             req.send();
         });
     }
@@ -72,6 +145,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return fetch(forecastUrl)
             .then(function(response) {
                 if (!response.ok) throw new Error('Błąd API prognozy: ' + response.status);
+                // Udany request fetch (prognoza)
+                console.log('FETCH JEST OK', forecastUrl, 'status:', response.status);
                 return response.json();
             });
     }
@@ -98,9 +173,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     var country = geoData[0].country;
 
                     console.log(`Miasto: ${name}, lat=${coords.lat}, lon=${coords.lon}`);
-                    descEl.textContent = `🌍 ${name}, ${country}`;
+                    descEl.textContent = `${name}, ${country}`;
 
-                    // 2️⃣ Drugi request — aktualna pogoda
+                    //aktualna pogoda
                     var weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${API_KEY}&units=metric&lang=pl`;
                     return xhrPromise(weatherUrl);
                 })
@@ -108,12 +183,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Pogoda:', weatherData);
                     updateUI(weatherData);
 
-                    // 3️⃣ Trzeci request — 5-dniowa prognoza
+                    //5-dniowa prognoza
                     return fetchForecastData(coords.lat, coords.lon);
                 })
                 .then(function (forecastData) {
                     console.log('Prognoza 5-dniowa:', forecastData);
-                    //updateUI(forecastData); // np. wyświetl listę prognoz
+                    updateUI(forecastData);
                 })
                 .catch(function (error) {
                     console.error(error);
